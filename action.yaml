@@ -28,6 +28,7 @@ inputs:
   workflow-run-url:
     description: 'The url of the workflow run.'
     required: false
+    default: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
   github-token:
     description: 'The GitHub token used for creating the tag.'
     required: true
