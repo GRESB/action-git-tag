@@ -16,7 +16,7 @@ inputs:
   release-candidate-suffix:
     description: 'If the action is running on a PR, this input defines git tag suffix for the release candidate tag.'
     required: false
-    default: ''
+    default: 'rc'
   tag-comment-header:
     description: 'The header on the tag comment, used to create the comment and to find existing comments.'
     required: false
@@ -24,7 +24,7 @@ inputs:
   workflow-run-url:
     description: 'The url of the workflow run.'
     required: false
-  pat:
+  github-token:
     description: 'The GitHub token used for creating the tag.'
     required: true
 outputs:
@@ -39,7 +39,7 @@ runs:
       if: inputs.create
       id: tag
       env:
-        GITHUB_TOKEN: ${{ inputs.pat }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
         WITH_V: true
         PRERELEASE_SUFFIX: pr${{ inputs.pr-number }}-${{ inputs.release-candidate-suffix }}
         PRERELEASE: ${{ inputs.pr-number != 0 }}
