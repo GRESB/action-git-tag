@@ -15,24 +15,37 @@ This action is also able to read comments created in PRs and retrieve the tag na
 
 ## Inputs
 
-| Input                    | Description                                                                                          | Required | Default |
-|--------------------------|------------------------------------------------------------------------------------------------------|----------|---------|
-| create                   | "Whether to create a tag comment comment."                                                           | true     | ''      |
-| read                     | "Whether to read a tag comment.                                                                      | true     | ''      |
-| pr-number                | "If the action is running on a PR, this input defines the PR number."                                | false    | ''      |
-| release-candidate-suffix | "If the action is running on a PR, this input defines git tag suffix for the release candidate tag." | false    | ''      |
-| tag-comment-header       | "The header on the tag comment, used to create the comment and to find existing comments."           | false    | ''      |
-| workflow-run-url         | "The url of the workflow run."                                                                       | false    |         |
-| pat                      | "The GitHub token used for creating the tag."                                                        | true     |         |
+| Input                    | Description                                                                                          | Required | Default                                                                               |
+|--------------------------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
+| create                   | "Whether to create a tag comment comment."                                                           | true     | ''                                                                                    |
+| read                     | "Whether to read a tag comment.                                                                      | true     | ''                                                                                    |
+| pr-number                | "If the action is running on a PR, this input defines the PR number."                                | false    | ''                                                                                    |
+| release-candidate-suffix | "If the action is running on a PR, this input defines git tag suffix for the release candidate tag." | false    | 'rc'                                                                                  |
+| tag-comment-header       | "The header on the tag comment, used to create the comment and to find existing comments."           | false    | ''                                                                                    |
+| tag-comment-body         | "Markdown content to be appended to the body  of the tag comment."                                   | false    | ''                                                                                    |
+| workflow-run-url         | "The url of the workflow run."                                                                       | false    | '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' |
+| github-token             | "The GitHub token used for creating the tag."                                                        | true     |                                                                                       |
 
 
-# Outputs
+## Outputs
 
 | Output | Description            | 
 |--------|------------------------|
 | tag    | "The name of the tag." |
 
-## Create a tag on a push event
+## Usage
+
+To create pull request comments, the action needs a template under `.github/templates/tag-comment.md`, with the following variables.
+```md
+{{ .header }}
+
+{{ .body }}
+
+{{ .footer }}
+```
+The template can contain any other static text.
+
+### Create a tag on a push event
 
 The following workflow configuration creates tags on push events to `main` branch. 
 The tags are created sequentially and prefixed with `v`.
@@ -55,10 +68,10 @@ jobs:
         uses: GRESB/action-git-tag@main
         with:
           create: true
-          pat: ${{ secrets.GITHUB_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-##  Create a tag from a pull request
+###  Create a tag from a pull request
 
 The following workflow configuration creates a tag when a pull request is labeled with `tag`.
 The tags are created sequentially taking into account both the latest tag in the repository and the latest tag created in the pull request.
@@ -85,12 +98,12 @@ jobs:
           pr-number: ${{ github.event.pull_request.number }}
           release-candidate-suffix: rc
           workflow-run-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          pat: ${{ secrets.GITHUB_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 After the tag is created a comment is added to the pull request, naming the tag.
 When the same pull request is re-labeled with `tag` the comment is updated.
 
-## Read a tag from a pull request comment
+### Read a tag from a pull request comment
 
 The following workflow configuration reads a previously created tag from a pull request comment, when the pull request is labeled with `read-tag`.
 The tag name is then made available as an output.
