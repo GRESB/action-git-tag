@@ -20,10 +20,11 @@ This action is also able to read comments created in PRs and retrieve the tag na
 | create                   | "Whether to create a tag comment comment."                                                           | true     | ''      |
 | read                     | "Whether to read a tag comment.                                                                      | true     | ''      |
 | pr-number                | "If the action is running on a PR, this input defines the PR number."                                | false    | ''      |
-| release-candidate-suffix | "If the action is running on a PR, this input defines git tag suffix for the release candidate tag." | false    | ''      |
+| release-candidate-suffix | "If the action is running on a PR, this input defines git tag suffix for the release candidate tag." | false    | 'rc'    |
 | tag-comment-header       | "The header on the tag comment, used to create the comment and to find existing comments."           | false    | ''      |
+| tag-comment-body         | "Markdown content to be appended to the body  of the tag comment."                                   | false    | ''      |
 | workflow-run-url         | "The url of the workflow run."                                                                       | false    |         |
-| pat                      | "The GitHub token used for creating the tag."                                                        | true     |         |
+| github-token             | "The GitHub token used for creating the tag."                                                        | true     |         |
 
 
 # Outputs
@@ -55,7 +56,7 @@ jobs:
         uses: GRESB/action-git-tag@main
         with:
           create: true
-          pat: ${{ secrets.GITHUB_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ##  Create a tag from a pull request
@@ -85,7 +86,7 @@ jobs:
           pr-number: ${{ github.event.pull_request.number }}
           release-candidate-suffix: rc
           workflow-run-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          pat: ${{ secrets.GITHUB_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 After the tag is created a comment is added to the pull request, naming the tag.
 When the same pull request is re-labeled with `tag` the comment is updated.
