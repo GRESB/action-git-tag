@@ -84,8 +84,6 @@ runs:
         echo "tag_comment_body<<EOT" >> "${GITHUB_OUTPUT}"
         echo "Tag: \`${release}\`" >> "${GITHUB_OUTPUT}"
         echo "" >> "${GITHUB_OUTPUT}"
-        echo "<br/>" >> "${GITHUB_OUTPUT}"
-        echo "" >> "${GITHUB_OUTPUT}"
         echo "${comment_body}" >> "${GITHUB_OUTPUT}"
         echo "EOT" >> "${GITHUB_OUTPUT}"
 
