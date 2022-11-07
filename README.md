@@ -27,13 +27,25 @@ This action is also able to read comments created in PRs and retrieve the tag na
 | github-token             | "The GitHub token used for creating the tag."                                                        | true     |         |
 
 
-# Outputs
+## Outputs
 
 | Output | Description            | 
 |--------|------------------------|
 | tag    | "The name of the tag." |
 
-## Create a tag on a push event
+## Usage
+
+To create pull request comments, the action needs a template under `.github/templates/tag-comment.md`, with the following variables.
+```md
+{{ .header }}
+
+{{ .body }}
+
+{{ .footer }}
+```
+The template can contain any other static text.
+
+### Create a tag on a push event
 
 The following workflow configuration creates tags on push events to `main` branch. 
 The tags are created sequentially and prefixed with `v`.
@@ -59,7 +71,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-##  Create a tag from a pull request
+###  Create a tag from a pull request
 
 The following workflow configuration creates a tag when a pull request is labeled with `tag`.
 The tags are created sequentially taking into account both the latest tag in the repository and the latest tag created in the pull request.
@@ -91,7 +103,7 @@ jobs:
 After the tag is created a comment is added to the pull request, naming the tag.
 When the same pull request is re-labeled with `tag` the comment is updated.
 
-## Read a tag from a pull request comment
+### Read a tag from a pull request comment
 
 The following workflow configuration reads a previously created tag from a pull request comment, when the pull request is labeled with `read-tag`.
 The tag name is then made available as an output.

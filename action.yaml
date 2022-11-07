@@ -105,7 +105,7 @@ runs:
       id: template
       if: inputs.create && inputs.pr-number
       with:
-        template: .github/templates/release-comment.md
+        template: .github/templates/tag-comment.md
         vars: |
           header: "${{ inputs.tag-comment-header }}"
           release: "not-yet-created"
