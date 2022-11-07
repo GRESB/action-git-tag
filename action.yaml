@@ -16,7 +16,7 @@ inputs:
   release-candidate-suffix:
     description: 'If the action is running on a PR, this input defines git tag suffix for the release candidate tag.'
     required: false
-    default: ''
+    default: 'rc'
   tag-comment-header:
     description: 'The header on the tag comment, used to create the comment and to find existing comments.'
     required: false
