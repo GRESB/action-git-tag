@@ -1,0 +1,22 @@
+name: Continues Integration - Tag
+
+
+on:
+  pull_request:
+    types: [ labeled ]
+
+
+jobs:
+  tag:
+    name: Create a git tag
+    if: github.event.label.name == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Git tag
+        uses: ./
+        with:
+          create: true
+          pr-number: ${{ github.event.pull_request.number }}
+          workflow-run-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
