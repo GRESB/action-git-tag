@@ -3,13 +3,13 @@ name: Continues Integration - Tag
 
 on:
   pull_request:
-    types: [ labeled ]
+    branches:
+      - '*'
 
 
 jobs:
   tag:
     name: Create a git tag
-    if: github.event.label.name == 'tag'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
