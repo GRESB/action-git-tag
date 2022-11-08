@@ -35,7 +35,7 @@ inputs:
 outputs:
   tag:
     description: 'The name of the tag.'
-    value: ${{ steps.read-pr-tag.outputs.release }}
+    value: ${{ steps.read-pr-tag.outputs.tag }}
 runs:
   using: "composite"
   steps:
@@ -71,11 +71,11 @@ runs:
         cat > .tmp-comment-body << 'EOT'
         ${{ steps.find-tag-comment.outputs.comment-body }}
         EOT
-        release="$( grep "Release: " .tmp-comment-body | sed -E "s/Release: \[(.*)\].*/\1/" | xargs )"
+        tag="$( grep "Tag: " .tmp-comment-body | sed -E "s/Tag: \`(.*)\`.*/\1/" | xargs )"
 
-        echo "DEBUG :: release = ${release}"
+        echo "DEBUG :: tag = ${tag}"
 
-        echo "release=${release}" >> "${GITHUB_OUTPUT}"
+        echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
     - name: Prepare tag PR comment content
       id: tag-comment
       if: inputs.create && inputs.pr-number
