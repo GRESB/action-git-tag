@@ -47,6 +47,8 @@ following variables.
 ```md
 {{ .header }}
 
+Tag: `{{ .tag }}`
+
 {{ .body }}
 
 {{ .footer }}
