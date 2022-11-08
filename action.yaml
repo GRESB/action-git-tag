@@ -2,7 +2,7 @@ name: 'Git Tag'
 description: 'Create a git tag or read tag information from a comment.'
 inputs:
   create:
-    description: 'Whether to create a tag comment comment.'
+    description: 'Whether to create a tag comment.'
     required: true
     default: ''
   read:
