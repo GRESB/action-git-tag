@@ -82,7 +82,6 @@ runs:
       shell: bash
       run: |
         echo "tag_comment_body<<EOT" >> "${GITHUB_OUTPUT}"
-        echo "Tag: \`${release}\`" >> "${GITHUB_OUTPUT}"
         echo "" >> "${GITHUB_OUTPUT}"
         echo "" >> "${GITHUB_OUTPUT}"
         echo "${comment_body}" >> "${GITHUB_OUTPUT}"
@@ -95,7 +94,6 @@ runs:
         fi
         echo "footer=${footer} ${updated}</sup></sub>" >> "${GITHUB_OUTPUT}"
       env:
-        release: ${{ steps.tag.outputs.new_tag }}
         found_comment_id: ${{ steps.find-tag-comment.outputs.comment-id }}
         github_run_id: ${{ github.run_id }}
         github_server_url: (${{ github.server_url }}
@@ -108,7 +106,7 @@ runs:
         template: .github/templates/tag-comment.md
         vars: |
           header: "${{ inputs.tag-comment-header }}"
-          release: "not-yet-created"
+          tag: "${{ steps.tag.outputs.new_tag }}"
           body: "${{ steps.tag-comment.outputs.tag_comment_body }}"
           footer: "${{ steps.tag-comment.outputs.footer }}"
     - name: Create tag PR comment
