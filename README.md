@@ -97,7 +97,6 @@ jobs:
           create: true
           pr-number: ${{ github.event.pull_request.number }}
           release-candidate-suffix: rc
-          workflow-run-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 After the tag is created a comment is added to the pull request, naming the tag.
@@ -130,5 +129,4 @@ jobs:
         with:
           read: true
           pr-number: ${{ github.event.pull_request.number }}
-          workflow-run-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 ```
