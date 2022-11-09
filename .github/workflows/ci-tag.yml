@@ -1,0 +1,27 @@
+name: Continues Integration - Push Tag
+
+
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  tag:
+    name: Read a git tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read git tag
+        uses: ./
+        with:
+          read: true
+          ref: ${{ github.ref }}
+
+      - name: Echo read tag
+        run: |
+          echo "::debug::tag = ${{ steps.read.outputs.tag }}"
+          echo "::debug::is-final = ${{ steps.read.outputs.is-final }}"
+          echo "::debug::sha = ${{ steps.read.outputs.sha }}"
+          echo "::debug::pr-number = ${{ steps.read.outputs.pr-number }}"
