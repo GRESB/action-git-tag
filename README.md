@@ -17,22 +17,26 @@ This is a composite action that combines other actions, like:
 
 ## Inputs
 
-| Input                    | Description                                                                                        | Required | Default                                                                               |
-|--------------------------|----------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
-| create                   | Whether to create a tag comment.                                                                   | true     | ''                                                                                    |
-| read                     | Whether to read a tag comment.                                                                     | true     | ''                                                                                    |
-| pr-number                | If the action is running on a PR, this input defines the PR number.                                | false    | ''                                                                                    |
-| release-candidate-suffix | If the action is running on a PR, this input defines git tag suffix for the release candidate tag. | false    | 'rc'                                                                                  |
-| tag-comment-header       | The header on the tag comment, used to create the comment and to find existing comments.           | false    | '## Tag created'                                                                      |
-| tag-comment-body         | Markdown content to be appended to the body  of the tag comment.                                   | false    | ''                                                                                    |
-| workflow-run-url         | The url of the workflow run.                                                                       | false    | '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' |
-| github-token             | The GitHub token used for creating the tag.                                                        | true     |                                                                                       |
+| Input                    | Description                                                                                                                                                                              | Required | Default                                                                               |
+|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------|
+| create                   | Whether to create a tag comment.                                                                                                                                                         | true     | ''                                                                                    |
+| read                     | Whether to read a tag comment.                                                                                                                                                           | true     | ''                                                                                    |
+| pr-number                | If the action is running on a PR event, this input defines the PR number and the tag will be read from a PR comment. This input should  not be set together with "ref".                  | false    | ''                                                                                    |
+| ref                      | If the action is running on a tag event, this input defined the tag ref (eg. github.ref) and the tag will be read from the ref. This input should  not be set together with "pr-number". | false    | ''                                                                                    |
+| release-candidate-suffix | If the action is running on a PR, this input defines git tag suffix for the release candidate tag.                                                                                       | false    | 'rc'                                                                                  |
+| tag-comment-header       | The header on the tag comment, used to create the comment and to find existing comments.                                                                                                 | false    | '## Tag created'                                                                      |
+| tag-comment-body         | Markdown content to be appended to the body  of the tag comment.                                                                                                                         | false    | ''                                                                                    |
+| workflow-run-url         | The url of the workflow run.                                                                                                                                                             | false    | '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' |
+| github-token             | The GitHub token used for creating the tag.                                                                                                                                              | true     |                                                                                       |
 
 ## Outputs
 
-| Output | Description            | 
-|--------|------------------------|
-| tag    | "The name of the tag." |
+| Output    | Description                                         |
+|-----------|-----------------------------------------------------|
+| tag       | The name of the tag.                                |
+| is-final  | Whether the release is a final release (eg v1.2.3). |
+| sha       | The sha of the tagged commit.                       |
+| pr-number | The PR number referenced in release candidate tags. |
 
 ## Usage
 
@@ -121,7 +125,7 @@ When the same pull request is re-labeled with `tag` the comment is updated.
 
 The following workflow configuration reads a previously created tag from a pull request comment, when the pull request
 is labeled with `read-tag`.
-The tag name is then made available as an output.
+The tag innformation is then made available as outputs.
 
 ```yaml
 name: Git Tag - Pull Request
@@ -134,7 +138,7 @@ on:
 
 jobs:
   read:
-    name: Read PR tag
+    name: Read PR Tag
     runs-on: ubuntu-latest
     if: github.event.label.name == 'read-tag'
     outputs:
@@ -146,4 +150,47 @@ jobs:
         with:
           read: true
           pr-number: ${{ github.event.pull_request.number }}
+      - name: Use tag information
+        run: |
+          echo "tag = ${{ steps.read-pr-tag.outputs.tag }}"
+          echo "is-final = ${{ steps.read-pr-tag.outputs.is-final }}"
+          echo "sha = ${{ steps.read-pr-tag.outputs.sha }}"
+          echo "pr-number = ${{ steps.read-pr-tag.outputs.pr-number }}"
+```
+
+### Read a tag from a tag event
+
+The following workflow configuration executes on push tag event.
+The tag information is then made available as outputs.
+
+```yaml
+name: Git Tag - Push Tag
+
+
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  read:
+    name: Read Pushed Tag
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'read-tag'
+    outputs:
+      release: ${{ steps.read-pr-tag.outputs.tag }}
+    steps:
+      - name: Read Pushed Tag
+        id: read-pushed-tag
+        uses: GRESB/action-git-tag@main
+        with:
+          read: true
+          ref: ${{ github.ref }}
+      - name: Use tag information
+        run: |
+          echo "tag = ${{ steps.read-pushed-tag.outputs.tag }}"
+          echo "is-final = ${{ steps.read-pushed-tag.outputs.is-final }}"
+          echo "sha = ${{ steps.read-pushed-tag.outputs.sha }}"
+          echo "pr-number = ${{ steps.read-pushed-tag.outputs.pr-number }}"
 ```

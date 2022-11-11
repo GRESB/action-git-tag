@@ -26,7 +26,7 @@ inputs:
     required: false
     default: "## Tag created"
   tag-comment-body:
-    description: 'Markdown content to be appended to the body  of the tag comment.'
+    description: 'Markdown content to be appended to the body of the tag comment.'
     required: false
     default: ''
   workflow-run-url:
@@ -44,10 +44,10 @@ outputs:
     description: 'Whether the release is a final release (eg v1.2.3).'
     value: ${{ steps.read-pr-tag.outputs.is-final }}
   sha:
-    description: 'The sha of the tag underlying to the release.'
+    description: 'The sha of the tagged commit.'
     value: ${{ steps.read-pr-tag.outputs.sha }}
   pr-number:
-    description: 'The PR number of the tag is meant for a release candidate.'
+    description: 'The PR number referenced in release candidate tags.'
     value: ${{ steps.read-pr-tag.outputs.pr-number }}
 runs:
   using: "composite"
