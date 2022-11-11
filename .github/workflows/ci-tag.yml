@@ -1,0 +1,30 @@
+name: Continues Integration - Push Tag
+
+
+on:
+  push:
+    tags:
+      - '*'
+
+
+jobs:
+  tag:
+    name: Read a git tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read git tag
+        id: read
+        uses: ./
+        with:
+          read: true
+          ref: ${{ github.ref }}
+
+      - name: Echo read tag
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ steps.read.outputs.pr-number }}
+          body: |
+            Tag: ${{ steps.read.outputs.tag }}
+            SHA: ${{ steps.read.outputs.sha }}
+            Is Final: ${{ steps.read.outputs.is-final }}
