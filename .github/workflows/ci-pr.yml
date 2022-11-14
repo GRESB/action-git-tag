@@ -29,6 +29,8 @@ jobs:
       - name: Echo read tag
         uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ steps.read.outputs.pr-number }}
           body: |
-            Read tag: ${{ steps.read.outputs.tag }}
+            Tag: ${{ steps.read.outputs.tag }}
+            SHA: ${{ steps.read.outputs.sha }}
+            Is Final: ${{ steps.read.outputs.is-final }}
