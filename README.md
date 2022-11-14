@@ -2,18 +2,18 @@
 
 A GitHub Action to create and read git tags.
 This is a composite action that combines other actions, like:
-
 - anothrNick/github-tag-action
 - peter-evans/find-comment
 - peter-evans/create-or-update-comment
 - actions/github-script
 - chuhlomin/render-template
-  The simplest use-case for this action is to create a git tag from a push event.
-  In that case all it does is create and push the tag.
-  Another use-case is to create a tag from a pull request using a label event.
-  In that case the action creates and pushes the git tag, but also adds a comment to the pull request with information
-  about the tag.
-  This action is also able to read comments created in PRs and retrieve the tag name.
+
+The simplest use-case for this action is to create a git tag from a push event.
+In that case all it does is create and push the tag.
+Another use-case is to create a tag from a pull request using a label event.
+In that case the action creates and pushes the git tag, but also adds a comment to the pull request with information
+about the tag.
+This action is also able to read comments created in PRs and retrieve the tag name.
 
 ## Inputs
 
@@ -125,7 +125,7 @@ When the same pull request is re-labeled with `tag` the comment is updated.
 
 The following workflow configuration reads a previously created tag from a pull request comment, when the pull request
 is labeled with `read-tag`.
-The tag innformation is then made available as outputs.
+The tag information is then made available as outputs.
 
 ```yaml
 name: Git Tag - Pull Request
