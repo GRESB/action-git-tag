@@ -20,6 +20,7 @@ jobs:
           read: true
           ref: ${{ github.ref }}
       - name: Echo read tag
+        if: steps.read.outputs.pr-number
         uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ steps.read.outputs.pr-number }}
