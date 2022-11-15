@@ -52,6 +52,13 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Debug github event
+      shell: bash
+      run: |
+        echo "DEBUG :: github event needs to be used to make it available to the action"
+        echo "DEBUG :: \n${github_event}"
+      env:
+        github_event: ${{ toJSON(github.event) }}
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@1.52.0
       if: inputs.create
