@@ -19,7 +19,6 @@ jobs:
         with:
           read: true
           ref: ${{ github.ref }}
-
       - name: Echo read tag
         uses: peter-evans/create-or-update-comment@v2
         with:
