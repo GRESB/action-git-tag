@@ -1,4 +1,4 @@
-name: Continues Integration - Push Tag
+name: Continuous Integration - Push Tag
 
 
 on:
