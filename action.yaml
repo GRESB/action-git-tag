@@ -118,9 +118,15 @@ runs:
           echo "DEBUG :: reading commit message to discover SHA"
           echo "DEBUG :: commit message = ${commit_message}"
           sha="$( sed -e "s/Merge //" -e "s/ into .*//" <<<"${commit_message}" )"
-        else 
+        elif [[ "${event_after}" != "" ]]; then
           echo "DEBUG :: reading SHA from github event after field"
           sha="${event_after}"
+        else
+          echo "DEBUG :: calling git rev-parse HEAD to determine the SHA"
+          sha="$( git rev-parse HEAD )"
+          echo "DEBUG :: sha = ${sha}"
+          echo "DEBUG :: sha = ${sha}"
+          echo "DEBUG :: pull_request event = ${{ github.event.pull_request.head.sha }}"
         fi
 
         pr_number=$( sed -E -e "s/v[0-9]+\.[0-9]+.[0-9]+//" -e "s/-pr//" -e "s/-${rc_suffix}.[0-9]+//" <<<"${tag}" )
