@@ -135,13 +135,13 @@ runs:
         echo "::debug::sha=${sha}"
         echo "::debug::name=${tag_name}"
         echo "::debug::pr-number=${pr_number}"
-        
-        echo "DEBUG :: github event ${github_event}"
+
+      #        echo "DEBUG :: github event ${github_event}"
       env:
         rc_suffix: ${{ inputs.release-candidate-suffix }}
         commit_message: ${{ github.event.commits[0].message }}
         event_after: ${{ github.event.after }}
-        github_event: ${{ toJSON(github.event) }}
+    #        github_event: ${{ toJSON(github.event) }}
     - name: Prepare tag PR comment content
       id: tag-comment
       if: inputs.create && inputs.pr-number
