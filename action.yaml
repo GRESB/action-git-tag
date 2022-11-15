@@ -61,6 +61,12 @@ runs:
         WITH_V: true
         PRERELEASE_SUFFIX: pr${{ inputs.pr-number }}-${{ inputs.release-candidate-suffix }}
         PRERELEASE: ${{ inputs.pr-number != 0 }}
+    - name: Export new tag to environment
+      if: inputs.create
+      shell: bash
+      run: echo "tag=${tag}" >> "${GITHUB_ENV}"
+      env:
+        tag: ${{ steps.tag.outputs.new_tag }}
     - name: Find Tag Comment
       uses: peter-evans/find-comment@v2
       if: (inputs.read || inputs.create) && inputs.pr-number
@@ -97,7 +103,6 @@ runs:
       env:
         tag_ref: ${{ inputs.ref }}
     - name: Extract tag information
-      if: inputs.read
       id: read-pr-tag
       shell: bash
       run: |
@@ -109,14 +114,18 @@ runs:
         fi
 
         # Determine the commit sha of the commit that originated the tag
-        if [[ "${is_final}" == "true" ]]; then
-          # Final release tagged on main
-          sha="${{ github.event.after }}"
-        else
-          # Release candidate tagged on PR
-          message='${{ github.event.commits[0].message }}'
-          sha="$( sed -e "s/Merge //" -e "s/ into .*//" <<<"${message}" )"
-        fi
+        sha="${{ github.event.after }}"
+        # TODO: remove this commented out block if ${{ github.event.after }} works to determine the sha for all events
+        #        if [[ "${is_final}" == "true" ]]; then
+        #          # Final release tagged on main
+        #          sha="${{ github.event.after }}"
+        #        else
+        #          # Release candidate tagged on PR
+        #          echo "DEBUG :: github event ${github_event}"
+        #          echo "DEBUG :: reading commit message to discover SHA"
+        #          echo "DEBUG :: commit message = ${commit_message}"
+        #          sha="$( sed -e "s/Merge //" -e "s/ into .*//" <<<"${commit_message}" )"
+        #        fi
 
         pr_number=$( sed -E -e "s/v[0-9]+\.[0-9]+.[0-9]+//" -e "s/-pr//" -e "s/-${rc_suffix}.[0-9]+//" <<<"${tag}" )
 
@@ -132,6 +141,8 @@ runs:
         echo "::debug::pr-number=${pr_number}"
       env:
         rc_suffix: ${{ inputs.release-candidate-suffix }}
+        #        github_event: ${{ toJSON(github.event) }}
+        #        commit_message: ${{ github.event.commits[0].message }}
     - name: Prepare tag PR comment content
       id: tag-comment
       if: inputs.create && inputs.pr-number
