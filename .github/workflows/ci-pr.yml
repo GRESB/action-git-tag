@@ -12,7 +12,7 @@ jobs:
     name: Create a git tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create git tag
         id: tag
         uses: ./
@@ -37,7 +37,7 @@ jobs:
           pr-number: ${{ github.event.pull_request.number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Echo read tag
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ steps.read.outputs.pr-number }}
           body: |
